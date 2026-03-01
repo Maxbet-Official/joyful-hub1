@@ -1,95 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 220 20% 5%;
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 14% 14%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 222 16% 12%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 93% 58%;
+    --primary-foreground: 220 20% 5%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 14% 14%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 10% 20%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 145 100% 35%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 10% 20%;
+    --input: 220 10% 20%;
+    --ring: 45 93% 58%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Casino-specific tokens */
+    --casino-bg: 220 20% 5%;
+    --casino-card: 220 14% 14%;
+    --casino-card-alpha: rgba(30, 33, 40, 0.95);
+    --casino-gold: 45 93% 58%;
+    --casino-gold-hex: #FBBF24;
+    --casino-amber: 36 96% 50%;
+    --casino-amber-hex: #F59E0B;
+    --casino-green: 152 100% 39%;
+    --casino-green-hex: #00C853;
+    --casino-green-light: 160 84% 64%;
+    --casino-green-light-hex: #34D399;
+    --casino-red: 0 84% 60%;
+    --casino-red-hex: #EF4444;
+    --casino-orange: 25 95% 53%;
+    --casino-orange-hex: #F97316;
+    --casino-text-50: rgba(255, 255, 255, 0.5);
+    --casino-text-40: rgba(255, 255, 255, 0.4);
+    --casino-text-30: rgba(255, 255, 255, 0.3);
+    --casino-text-80: rgba(255, 255, 255, 0.8);
+    --casino-border: rgba(255, 255, 255, 0.08);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -98,8 +73,360 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
   }
+}
+
+@layer components {
+  .glass-card {
+    background: var(--casino-card-alpha);
+    border: 1px solid var(--casino-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .casino-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #00C853 0%, #00A844 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    animation: pulse-glow 2.5s infinite;
+  }
+  .casino-cta-btn:hover {
+    background: linear-gradient(135deg, #00E676 0%, #00C853 100%);
+    box-shadow: 0 4px 20px rgba(0, 200, 83, 0.3);
+  }
+  .casino-cta-btn:active {
+    transform: scale(0.98);
+  }
+
+  .promo-widget {
+    background: linear-gradient(145deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.02) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .promo-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    animation: shine 4s infinite;
+    pointer-events: none;
+  }
+
+  .promo-code-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    background: #FFC107;
+    color: #111;
+    font-weight: 800;
+    border: 2px dashed #B28900;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+    overflow: hidden;
+  }
+  .promo-code-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+  }
+  .promo-code-box.copied {
+    background: #00C853;
+    border-color: #009624;
+    color: #fff;
+  }
+
+  .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: rgba(0, 200, 83, 0.1);
+    color: #00C853;
+    border: 1px solid rgba(0, 200, 83, 0.15);
+  }
+  .trust-badge svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 10px;
+    font-weight: 700;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    flex-shrink: 0;
+  }
+  .logo-icon:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .lang-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: var(--casino-text-80);
+    font-size: 10px;
+    font-weight: 500;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+  }
+  .lang-badge:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .more-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--casino-text-50);
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+  .more-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
+  .more-btn.active {
+    background: rgba(255, 255, 255, 0.25);
+    color: var(--casino-text-80);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+  }
+
+  .tab-btn {
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    border-bottom: 2px solid transparent;
+    color: var(--casino-text-40);
+    background: none;
+    cursor: pointer;
+  }
+  .tab-btn:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .tab-btn.active {
+    color: #fff;
+    border-bottom-color: #FBBF24;
+  }
+
+  .popover-inner {
+    background: rgba(26, 29, 36, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04), 0 0 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  .popover-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    font-size: 9px;
+    font-weight: 700;
+    color: #000;
+    transition: all 0.15s ease;
+    overflow: hidden;
+  }
+
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(30, 33, 40, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--casino-border);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .sticky-bar.visible {
+    transform: translateY(0);
+  }
+
+  .geo-indicator {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 9999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+    line-height: 1;
+  }
+  .geo-indicator--available {
+    background: rgba(6, 95, 70, 0.7);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  .geo-indicator--unavailable {
+    background: rgba(127, 29, 29, 0.7);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .rating-badge-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 16px 0;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    color: #FBBF24;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .rating-badge-link:hover {
+    background: rgba(245, 158, 11, 0.15);
+    box-shadow: 0 0 12px rgba(255, 193, 7, 0.15);
+  }
+  .rating-badge-link:hover svg {
+    transform: translateX(-2px);
+  }
+  .rating-badge-link svg {
+    transition: transform 0.2s ease;
+  }
+
+  .info-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .geo-block {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    animation: fadeIn 0.5s ease-out;
+  }
+  .geo-block--available {
+    background: rgba(16, 185, 129, 0.1);
+    color: #34D399;
+    border: 1px solid rgba(16, 185, 129, 0.15);
+  }
+  .geo-block--unavailable {
+    background: rgba(239, 68, 68, 0.1);
+    color: #F87171;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+  }
+  .geo-block--unknown {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--casino-text-50);
+    border: 1px solid var(--casino-border);
+  }
+}
+
+@layer utilities {
+  .font-mono-casino {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Animations */
+@keyframes shine {
+  0% { left: -100%; }
+  50%, 100% { left: 100%; }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.4); }
+  50% { box-shadow: 0 0 20px 4px rgba(0, 200, 83, 0.15); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes popoverIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
