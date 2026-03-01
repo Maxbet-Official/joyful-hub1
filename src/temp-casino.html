@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casino Card Header — Static Component</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #0D0F13;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ===== LAYOUT ===== */
+.page-wrapper { max-width: 960px; margin: 0 auto; padding: 16px 12px 120px; }
+@media (min-width: 1024px) { .page-wrapper { padding: 16px 16px 24px; } }
+
+/* ===== GLASS CARD ===== */
+.glass-card {
+  background: rgba(30, 33, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ===== RATING BADGE LINK ===== */
+.rating-badge-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 16px 16px 0; padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: #FBBF24; font-size: 14px; font-weight: 500;
+  transition: all 0.2s ease;
+}
+.rating-badge-link:hover {
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 12px rgba(255, 193, 7, 0.15);
+}
+.rating-badge-link svg { transition: transform 0.2s ease; }
+.rating-badge-link:hover svg { transform: translateX(-2px); }
+
+/* ===== TWO-COLUMN LAYOUT ===== */
+.card-body { display: flex; flex-direction: column; gap: 24px; padding: 16px; padding-top: 12px; }
+@media (min-width: 1024px) { .card-body { flex-direction: row; } }
+.col-left { display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 1024px) { .col-left { width: 35%; flex-shrink: 0; } }
+.col-right { display: flex; flex-direction: column; gap: 20px; flex: 1; }
+
+/* ===== LOGO SECTION ===== */
+.logo-section { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.logo-wrapper { position: relative; display: inline-block; }
+.logo-wrapper img { object-fit: contain; max-width: 100%; height: auto; }
+.logo-fallback {
+  font-size: 24px; font-weight: 900;
+  background: linear-gradient(135deg, #FBBF24, #F97316);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; padding: 8px 0;
+}
+.logo-subtitle { font-size: 14px; color: rgba(255,255,255,0.4); font-weight: 500; text-align: center; width: 100%; }
+
+/* Geo indicator on logo */
+.geo-indicator {
+  position: absolute; bottom: -4px; right: -4px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 2px 6px; border-radius: 9999px;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  font-size: 12px; line-height: 1;
+}
+.geo-indicator--available { background: rgba(6, 95, 70, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); }
+.geo-indicator--unavailable { background: rgba(127, 29, 29, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); }
+.geo-dot {
+  width: 10px; height: 10px; border-radius: 50%; display: block;
+}
+.geo-dot--green { background: #34D399; box-shadow: 0 0 6px rgba(16,185,129,0.7); }
+.geo-dot--red { background: #EF4444; box-shadow: 0 0 6px rgba(239,68,68,0.7); }
+
+/* ===== CTA BUTTON ===== */
+.official-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px 24px;
+  background: linear-gradient(135deg, #00C853 0%, #00A844 100%);
+  color: #fff; font-weight: 600; font-size: 15px;
+  border-radius: 12px; transition: all 0.2s ease;
+  animation: pulse-glow 2.5s infinite;
+}
+.official-btn:hover {
+  background: linear-gradient(135deg, #00E676 0%, #00C853 100%);
+  box-shadow: 0 4px 20px rgba(0, 200, 83, 0.3);
+}
+.official-btn:active { transform: scale(0.98); }
+
+/* ===== PROMO WIDGET ===== */
+.promo-widget {
+  background: linear-gradient(145deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.02) 100%);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 12px; padding: 16px;
+  position: relative; overflow: hidden;
+}
+.promo-widget::before {
+  content: ''; position: absolute; top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  animation: shine 4s infinite; pointer-events: none;
+}
+.promo-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+  color: rgba(245, 158, 11, 0.7); margin-bottom: 8px; font-weight: 600;
+}
+.promo-offer { font-size: 26px; line-height: 1.1; font-weight: 800; color: #fff; margin-bottom: 4px; letter-spacing: -0.02em; }
+.promo-desc { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+
+.promo-code-box {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 14px 16px; font-size: 15px;
+  background: #FFC107; color: #111; font-weight: 800;
+  border: 2px dashed #B28900; border-radius: 8px;
+  cursor: pointer; transition: all 0.2s ease;
+  font-family: 'JetBrains Mono', monospace;
+  position: relative; overflow: hidden;
+}
+.promo-code-box:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3); }
+.promo-code-box.copied { background: #00C853; border-color: #009624; color: #fff; }
+.promo-code-text { letter-spacing: 0.2em; position: relative; z-index: 1; }
+.promo-code-icon { position: relative; z-index: 1; }
+
+/* Shimmer on button */
+.promo-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+.promo-code-box.copied .promo-shimmer { display: none; }
+
+/* Social proof row */
+.social-proof {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.timer-block { display: flex; align-items: center; gap: 8px; color: #F59E0B; }
+.timer-block svg { width: 14px; height: 14px; flex-shrink: 0; }
+.timer-label { font-size: 9px; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.3); line-height: 1; margin-bottom: 2px; }
+.timer-value { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.counter-block { display: flex; align-items: center; gap: 8px; color: #F97316; }
+.counter-icon { padding: 6px; border-radius: 8px; background: rgba(249,115,22,0.1); animation: pulse 2s infinite; display: flex; }
+.counter-icon svg { width: 16px; height: 16px; }
+.counter-number { font-size: 14px; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -0.02em; }
+.counter-label { font-size: 9px; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.3); line-height: 1; margin-top: 2px; }
+
+/* ===== TRUST BADGES ===== */
+.badges-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.trust-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 9999px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+  background: rgba(0, 200, 83, 0.1);
+  color: #00C853;
+  border: 1px solid rgba(0, 200, 83, 0.15);
+}
+.trust-badge svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ===== RATING SECTION ===== */
+.rating-section { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+@media (min-width: 640px) { .rating-section { flex-direction: row; } }
+
+.rating-big { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.rating-number { font-size: 52px; line-height: 1; font-weight: 900; color: #fff; letter-spacing: -0.04em; }
+.rating-stars { display: flex; gap: 2px; font-size: 18px; }
+.star-full { color: #FBBF24; }
+.star-half { color: rgba(251, 191, 36, 0.7); }
+.star-empty { color: rgba(255,255,255,0.15); }
+.rating-label { font-size: 11px; color: rgba(255,255,255,0.3); font-weight: 500; margin-top: 2px; }
+
+/* Sub-ratings row */
+.sub-ratings { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; flex: 1; padding-bottom: 4px; }
+.sub-ratings::-webkit-scrollbar { display: none; }
+.sub-rating { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+.sub-rating svg { transform: rotate(-90deg); }
+.sub-rating-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+.sub-rating-label { font-size: 9px; color: rgba(255,255,255,0.4); text-align: center; line-height: 1.2; max-width: 56px; font-weight: 500; }
+.circular-wrapper { position: relative; width: 52px; height: 52px; }
+
+/* ===== PROVIDERS / PAYMENTS / LANGUAGES GRID ===== */
+.info-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+@media (min-width: 768px) { .info-grid { grid-template-columns: repeat(3, 1fr); } }
+.info-block-title {
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  font-weight: 600; margin-bottom: 12px;
+}
+
+.icon-row {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+@media (max-width: 767px) {
+  .icon-row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; scroll-snap-type: x mandatory; }
+  .icon-row::-webkit-scrollbar { display: none; }
+  .icon-row > * { scroll-snap-align: start; }
+}
+
+/* Logo icons (providers/payments) */
+.logo-icon {
+  width: 28px; height: 28px; border-radius: 6px; padding: 4px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.9); color: #000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  font-size: 10px; font-weight: 700;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+}
+.logo-icon:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+
+/* Language badge */
+.lang-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  color: rgba(255,255,255,0.8);
+  font-size: 10px; font-weight: 500;
+  flex-shrink: 0; transition: background 0.15s ease;
+}
+.lang-badge:hover { background: rgba(255,255,255,0.08); }
+
+/* More button (+N) */
+.more-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0; transition: all 0.15s ease;
+  position: relative;
+}
+.more-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+.more-btn.active { background: rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); box-shadow: 0 0 8px rgba(255,255,255,0.08); }
+
+/* ===== POPOVER ===== */
+.popover-root { pointer-events: auto; position: fixed; z-index: 9999; }
+.popover-inner {
+  background: rgba(26, 29, 36, 0.98);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04), 0 0 60px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+.popover-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; color: rgba(255,255,255,0.4);
+}
+.popover-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 18px; padding: 0 6px;
+  border-radius: 9px; background: rgba(255,255,255,0.08);
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5);
+}
+.popover-body {
+  padding: 12px; max-height: 260px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.popover-body::-webkit-scrollbar { width: 4px; }
+.popover-body::-webkit-scrollbar-track { background: transparent; }
+.popover-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+.popover-grid-icons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px 8px; }
+.popover-grid-langs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+.popover-icon-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.popover-icon-item:hover .popover-icon-box { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+.popover-icon-box {
+  width: 32px; height: 32px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  font-size: 9px; font-weight: 700; color: #000;
+  transition: all 0.15s ease; overflow: hidden;
+}
+.popover-icon-name { font-size: 8px; color: rgba(255,255,255,0.4); text-align: center; line-height: 1.2; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+
+.popover-lang-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 8px;
+  transition: background 0.15s ease;
+}
+.popover-lang-item:hover { background: rgba(255,255,255,0.06); }
+.popover-lang-flag { font-size: 16px; line-height: 1; flex-shrink: 0; }
+.popover-lang-name { font-size: 11px; color: rgba(255,255,255,0.8); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.popover-arrow {
+  position: absolute; bottom: -6px;
+  width: 12px; height: 12px;
+  background: rgba(26, 29, 36, 0.98);
+  border-right: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transform: translateX(-50%) rotate(45deg);
+  pointer-events: none;
+}
+
+.popover-hidden { display: none; }
+.popover-visible { display: block; animation: popoverIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* ===== GEO AVAILABILITY ===== */
+.geo-block {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 8px;
+  font-size: 14px; font-weight: 600;
+  animation: fadeIn 0.5s ease-out;
+}
+.geo-block--available { background: rgba(16,185,129,0.1); color: #34D399; border: 1px solid rgba(16,185,129,0.15); }
+.geo-block--unavailable { background: rgba(239,68,68,0.1); color: #F87171; border: 1px solid rgba(239,68,68,0.15); }
+.geo-block--unknown { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.08); }
+
+/* ===== TAB NAVIGATION (sticky) ===== */
+.tab-nav {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; gap: 2px; padding: 0 16px;
+  background: rgba(30, 33, 40, 0.97);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 14px 16px; font-size: 13px; font-weight: 600;
+  white-space: nowrap; transition: color 0.2s ease;
+  border-bottom: 2px solid transparent;
+  color: rgba(255,255,255,0.4); background: none;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.7); }
+.tab-btn.active { color: #fff; border-bottom-color: #FBBF24; }
+
+/* ===== TAB CONTENT ===== */
+.tab-content {
+  background: rgba(30, 33, 40, 0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top: none; border-radius: 0 0 16px 16px;
+  padding: 20px 24px; margin-top: 2px;
+}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.tab-pane h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+.tab-pane p { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 12px; }
+.info-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px; }
+@media (max-width: 639px) { .info-cards { grid-template-columns: 1fr; } }
+.info-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 16px;
+}
+.info-card-value { font-size: 24px; font-weight: 700; }
+.info-card-value--amber { color: #FBBF24; }
+.info-card-value--green { color: #34D399; }
+.info-card-label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+/* ===== MOBILE STICKY BAR ===== */
+.sticky-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: rgba(30, 33, 40, 0.98);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.sticky-bar.visible { transform: translateY(0); }
+@media (min-width: 1024px) { .sticky-bar { display: none; } }
+
+.sticky-name { flex-shrink: 0; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.8); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sticky-code {
+  flex-shrink: 0; padding: 6px 12px; border-radius: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(245, 158, 11, 0.15); color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  transition: all 0.2s ease;
+}
+.sticky-code:active { transform: scale(0.95); }
+.sticky-code.copied { background: #059669; color: #fff; border-color: #059669; }
+.sticky-play {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 16px; border-radius: 12px;
+  font-weight: 700; font-size: 14px; color: #fff;
+  background: linear-gradient(135deg, #00C853 0%, #00A844 100%);
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
+  z-index: 100; background: #059669; color: #fff;
+  padding: 10px 20px; border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  animation: slideUp 0.3s ease-out;
+  pointer-events: none;
+}
+.toast.hidden { display: none; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes shine { 0% { left: -100%; } 50%, 100% { left: 100%; } }
+@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,200,83,0.4); } 50% { box-shadow: 0 0 20px 4px rgba(0,200,83,0.15); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes popoverIn { from { opacity: 0; transform: translateY(calc(-100% + 8px)); } to { opacity: 1; transform: translateY(-100%); } }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper" id="app">
+
+  <!-- ===== GLASS CARD ===== -->
+  <div class="glass-card" id="casino-card">
+
+    <!-- Rating Badge Link -->
+    <a href="/casino/rating/" class="rating-badge-link" id="rating-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+      <span id="rating-text">🏆 #10 в рейтинге</span>
+    </a>
+
+    <!-- Two-Column Layout -->
+    <div class="card-body">
+
+      <!-- ===== COLUMN 1: Conversion Zone ===== -->
+      <div class="col-left">
+
+        <!-- Logo + Name -->
+        <div class="logo-section">
+          <div class="logo-wrapper">
+            <img id="casino-logo" src="https://casino.ru/wp-content/uploads/casino/196885/pinco.png" alt="CatCasino" title="CatCasino" width="285" height="70">
+            <!-- Geo indicator — injected by JS -->
+            <div class="geo-indicator geo-indicator--available" id="logo-geo" style="display:none;">
+              <span id="logo-geo-flag">🇺🇦</span>
+              <span class="geo-dot geo-dot--green" id="logo-geo-dot"></span>
+            </div>
+          </div>
+          <span class="logo-subtitle" id="casino-subtitle">Онлайн казино CatCasino</span>
+        </div>
+
+        <!-- Official Site Button -->
+        <a href="https://catcasino.com" target="_blank" rel="noopener noreferrer" class="official-btn" id="official-link">
+          Официальный сайт
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+
+        <!-- Promo Widget -->
+        <div class="promo-widget">
+          <div class="promo-label" id="promo-label">Эксклюзивный бонус</div>
+          <div class="promo-offer" id="promo-offer">350 FS + 125%</div>
+          <div class="promo-desc" id="promo-desc">на первый депозит от 500 ₽</div>
+
+          <button class="promo-code-box" id="promo-copy-btn" onclick="copyPromoCode()">
+            <div class="promo-shimmer" id="promo-shimmer"></div>
+            <span class="promo-code-text" id="promo-code-text">CASINORU</span>
+            <span class="promo-code-icon" id="promo-code-icon">
+              <!-- Copy icon -->
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </span>
+          </button>
+
+          <!-- Social Proof -->
+          <div class="social-proof">
+            <!-- Timer -->
+            <div class="timer-block" id="timer-block">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <div>
+                <div class="timer-label">Истекает через</div>
+                <div class="timer-value" id="timer-value">56:20</div>
+              </div>
+            </div>
+
+            <!-- Counter -->
+            <div class="counter-block">
+              <div class="counter-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+              </div>
+              <div>
+                <div class="counter-number" id="counter-number">505</div>
+                <div class="counter-label">человек уже использовали</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== COLUMN 2: Information Zone ===== -->
+      <div class="col-right">
+
+        <!-- Trust Badges -->
+        <div class="badges-row" id="badges-row">
+          <span class="trust-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/><path d="M18 9h1.5a1 1 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6 9H4.5a1 1 0 0 1 0-5H6"/></svg>
+            Выбор игроков
+          </span>
+          <span class="trust-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            Лицензия Кюрасао
+          </span>
+          <span class="trust-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Быстрые выплаты
+          </span>
+          <span class="trust-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+            VIP программа
+          </span>
+        </div>
+
+        <!-- Rating Block -->
+        <div class="rating-section">
+          <!-- Overall -->
+          <div class="rating-big">
+            <div class="rating-number" id="overall-rating">4.7</div>
+            <div>
+              <div class="rating-stars" id="rating-stars">
+                <span class="star-full">★</span><span class="star-full">★</span><span class="star-full">★</span><span class="star-full">★</span><span class="star-half">★</span>
+              </div>
+              <div class="rating-label">Оценка редакции</div>
+            </div>
+          </div>
+
+          <!-- Sub-Ratings: Circular Progress -->
+          <div class="sub-ratings" id="sub-ratings">
+            <!-- JS injects these -->
+          </div>
+        </div>
+
+        <!-- Providers / Payments / Languages -->
+        <div class="info-grid">
+          <!-- Providers -->
+          <div>
+            <div class="info-block-title">Провайдеры</div>
+            <div class="icon-row" id="providers-row"><!-- JS --></div>
+          </div>
+          <!-- Payments -->
+          <div>
+            <div class="info-block-title">Платежи</div>
+            <div class="icon-row" id="payments-row"><!-- JS --></div>
+          </div>
+          <!-- Languages -->
+          <div>
+            <div class="info-block-title">Языки</div>
+            <div class="icon-row" id="languages-row"><!-- JS --></div>
+          </div>
+        </div>
+
+        <!-- Geo Availability -->
+        <div id="geo-block" style="display:none;"></div>
+
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav" id="tab-nav">
+      <button class="tab-btn active" data-tab="overview">Обзор</button>
+      <button class="tab-btn" data-tab="bonuses">Бонусы</button>
+      <button class="tab-btn" data-tab="reviews">Отзывы</button>
+      <button class="tab-btn" data-tab="payments">Платежи</button>
+      <button class="tab-btn" data-tab="faq">FAQ</button>
+    </div>
+  </div>
+
+  <!-- Tab Content Area -->
+  <div class="tab-content" id="tab-content">
+    <div class="tab-pane active" id="pane-overview">
+      <h2>Обзор CatCasino</h2>
+      <p>CatCasino — это современное онлайн-казино, предлагающее широкий выбор игр от 58+ ведущих провайдеров. Казино работает по лицензии Кюрасао и предоставляет игрокам безопасный и комфортный игровой опыт.</p>
+      <p>Платформа поддерживает 24+ платёжных систем, включая криптовалюты, и гарантирует быстрые выплаты. Новые игроки могут воспользоваться приветственным бонусом 350 FS + 125% по промокоду CASINORU.</p>
+      <div class="info-cards">
+        <div class="info-card"><div class="info-card-value info-card-value--amber">58+</div><div class="info-card-label">Провайдеров игр</div></div>
+        <div class="info-card"><div class="info-card-value info-card-value--amber">24+</div><div class="info-card-label">Платёжных систем</div></div>
+        <div class="info-card"><div class="info-card-value info-card-value--green">24/7</div><div class="info-card-label">Служба поддержки</div></div>
+        <div class="info-card"><div class="info-card-value info-card-value--green">1-24ч</div><div class="info-card-label">Время выплаты</div></div>
+      </div>
+    </div>
+    <div class="tab-pane" id="pane-bonuses">
+      <h2>Бонусы CatCasino</h2>
+      <div class="info-card" style="background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.15);margin-bottom:16px;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(245,158,11,0.6);font-weight:600;margin-bottom:4px;">Приветственный бонус</div>
+        <div style="font-size:24px;font-weight:800;margin-bottom:4px;">350 FS + 125%</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.4);">на первый депозит от 500 ₽</div>
+        <div style="margin-top:12px;font-size:14px;color:rgba(255,255,255,0.5);">Промокод: <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#FBBF24;">CASINORU</span></div>
+      </div>
+      <div class="info-card" style="margin-bottom:16px;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);font-weight:600;margin-bottom:4px;">Кэшбек</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:4px;">До 10% еженедельно</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.4);">Возврат части проигранных средств каждую неделю</div>
+      </div>
+      <div class="info-card">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);font-weight:600;margin-bottom:4px;">VIP программа</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:4px;">10 уровней</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.4);">Персональный менеджер, повышенные лимиты, эксклюзивные турниры</div>
+      </div>
+    </div>
+    <div class="tab-pane" id="pane-reviews">
+      <h2>Отзывы о CatCasino</h2>
+      <div class="info-card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-weight:600;font-size:14px;">Алексей К.</span><span style="color:#FBBF24;">★★★★★</span></div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;margin:0;">Отличное казино! Быстрые выплаты, большой выбор слотов. Промокод сработал сразу.</p>
+      </div>
+      <div class="info-card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-weight:600;font-size:14px;">Марина Д.</span><span style="color:#FBBF24;">★★★★<span style="color:rgba(255,255,255,0.15);">★</span></span></div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;margin:0;">Хороший бонус на старте. Поддержка отвечает быстро. Единственный минус — верификация занимает время.</p>
+      </div>
+      <div class="info-card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-weight:600;font-size:14px;">Олег В.</span><span style="color:#FBBF24;">★★★★★</span></div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;margin:0;">Играю уже полгода. Всегда стабильные выплаты, VIP-программа реально работает.</p>
+      </div>
+    </div>
+    <div class="tab-pane" id="pane-payments">
+      <h2>Платёжные системы</h2>
+      <div id="payments-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"><!-- JS --></div>
+    </div>
+    <div class="tab-pane" id="pane-faq">
+      <h2>Часто задаваемые вопросы</h2>
+      <div class="info-card" style="margin-bottom:12px;">
+        <div style="font-weight:600;font-size:14px;margin-bottom:8px;">Как активировать промокод?</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;">Введите промокод CASINORU при регистрации или в личном кабинете в разделе "Бонусы".</div>
+      </div>
+      <div class="info-card" style="margin-bottom:12px;">
+        <div style="font-weight:600;font-size:14px;margin-bottom:8px;">Сколько времени занимает вывод средств?</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;">Обработка заявки на вывод занимает от 1 до 24 часов в зависимости от выбранного метода оплаты.</div>
+      </div>
+      <div class="info-card" style="margin-bottom:12px;">
+        <div style="font-weight:600;font-size:14px;margin-bottom:8px;">Есть ли верификация?</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;">Да, казино может запросить верификацию личности для обеспечения безопасности вашего аккаунта.</div>
+      </div>
+      <div class="info-card">
+        <div style="font-weight:600;font-size:14px;margin-bottom:8px;">Какие провайдеры доступны?</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;">На платформе представлено более 58 провайдеров, включая Pragmatic Play, Microgaming, NetEnt и другие.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Sticky Bar -->
+<div class="sticky-bar" id="sticky-bar">
+  <div class="sticky-name">CatCasino</div>
+  <button class="sticky-code" id="sticky-code" onclick="copyStickyCode()">CASINORU</button>
+  <a href="https://catcasino.com" target="_blank" rel="noopener noreferrer" class="sticky-play">
+    ИГРАТЬ
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+  </a>
+</div>
+
+<!-- Toast -->
+<div class="toast hidden" id="toast">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+  Промокод скопирован!
+</div>
+
+
+<script>
+// ===================================================================
+// CASINO DATA — all data from admin, edit this object
+// ===================================================================
+const CASINO_DATA = {
+  id: '196885',
+  name: 'CatCasino',
+  logo: 'https://casino.ru/wp-content/uploads/casino/196885/pinco.png',
+  logoWidth: 285,
+  logoHeight: 70,
+  ratingPosition: 10,
+  catalogUrl: '/casino/rating/',
+  officialSiteUrl: 'https://catcasino.com',
+
+  bonusOffer: '350 FS + 125%',
+  bonusDesc: 'на первый депозит от 500 ₽',
+  promoCode: 'CASINORU',
+  promoLabel: 'Эксклюзивный бонус',
+
+  usedCount: 505,
+  timerMinutes: 56,
+
+  overallRating: 4.7,
+  subRatings: [
+    { label: 'Надежность', value: 4.8 },
+    { label: 'Скорость', value: 4.6 },
+    { label: 'Вывод средств', value: 4.5 },
+    { label: 'Оценка игроков', value: 4.7 },
+    { label: 'Бонусы', value: 4.9 },
+  ],
+
+  badges: [
+    { icon: 'trophy', text: 'Выбор игроков' },
+    { icon: 'shield', text: 'Лицензия Кюрасао' },
+    { icon: 'bolt', text: 'Быстрые выплаты' },
+    { icon: 'gift', text: 'VIP программа' },
+  ],
+
+  providers: [
+    { name: 'Pragmatic Play', abbr: 'PP' },
+    { name: 'Microgaming', abbr: 'MG' },
+    { name: 'NetEnt', abbr: 'NE' },
+    { name: "Play'n GO", abbr: 'PG' },
+    { name: 'Evolution', abbr: 'EV' },
+    { name: 'Yggdrasil', abbr: 'YG' },
+    { name: 'Red Tiger', abbr: 'RT' },
+    { name: 'Hacksaw', abbr: 'HS' },
+    { name: 'Nolimit City', abbr: 'NL' },
+    { name: 'Push Gaming', abbr: 'PU' },
+    { name: 'Relax Gaming', abbr: 'RX' },
+    { name: 'BGaming', abbr: 'BG' },
+    { name: 'ELK Studios', abbr: 'EK' },
+    { name: 'Thunderkick', abbr: 'TK' },
+    { name: 'Quickspin', abbr: 'QS' },
+    { name: 'Big Time Gaming', abbr: 'BT' },
+    { name: 'iSoftBet', abbr: 'IS' },
+    { name: 'Booongo', abbr: 'BO' },
+    { name: 'Endorphina', abbr: 'EN' },
+    { name: 'Wazdan', abbr: 'WZ' },
+    { name: 'Betsoft', abbr: 'BS' },
+    { name: 'Spinomenal', abbr: 'SP' },
+    { name: 'Amatic', abbr: 'AM' },
+    { name: 'Belatra', abbr: 'BL' },
+    { name: 'Habanero', abbr: 'HB' },
+  ],
+  totalProviders: 58,
+  visibleProviders: 6,
+
+  payments: [
+    { name: 'Visa', abbr: 'V', color: '#1E3A8A' },
+    { name: 'Mastercard', abbr: 'MC', color: '#DC2626' },
+    { name: 'Bitcoin', abbr: '₿', color: '#F97316' },
+    { name: 'USDT', abbr: '₮', color: '#10B981' },
+    { name: 'WebMoney', abbr: 'WM', color: '#2563EB' },
+    { name: 'Skrill', abbr: 'SK', color: '#9333EA' },
+    { name: 'Neteller', abbr: 'NT', color: '#3B82F6' },
+    { name: 'ecoPayz', abbr: 'eP', color: '#22C55E' },
+    { name: 'MiFinity', abbr: 'MF', color: '#6366F1' },
+    { name: 'Jeton', abbr: 'JT', color: '#EF4444' },
+    { name: 'Ethereum', abbr: 'Ξ', color: '#6366F1' },
+    { name: 'Litecoin', abbr: 'Ł', color: '#94A3B8' },
+    { name: 'Ripple', abbr: 'XR', color: '#3B82F6' },
+    { name: 'AstroPay', abbr: 'AP', color: '#F59E0B' },
+    { name: 'MuchBetter', abbr: 'MB', color: '#EC4899' },
+  ],
+  totalPayments: 24,
+  visiblePayments: 5,
+
+  languages: [
+    { name: 'Русский', flag: '🇷🇺' },
+    { name: 'English', flag: '🇬🇧' },
+    { name: 'Deutsch', flag: '🇩🇪' },
+    { name: 'Türkçe', flag: '🇹🇷' },
+    { name: 'Español', flag: '🇪🇸' },
+    { name: 'Português', flag: '🇵🇹' },
+    { name: 'Français', flag: '🇫🇷' },
+    { name: 'Italiano', flag: '🇮🇹' },
+    { name: 'Polski', flag: '🇵🇱' },
+    { name: '日本語', flag: '🇯🇵' },
+  ],
+  totalLanguages: 10,
+  visibleLanguages: 3,
+
+  allowedCountries: ['UA', 'RU', 'KZ', 'BY', 'UZ', 'AZ', 'GE', 'TR', 'DE'],
+};
+
+
+// ===================================================================
+// TIMER
+// ===================================================================
+let timeLeft = CASINO_DATA.timerMinutes ? CASINO_DATA.timerMinutes * 60 + 20 : 0;
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m.toString().padStart(2, '0') + ':' + s.toString().padStart(2, '0');
+}
+
+function updateTimer() {
+  if (timeLeft <= 0) {
+    document.getElementById('timer-block').style.display = 'none';
+    return;
+  }
+  timeLeft--;
+  document.getElementById('timer-value').textContent = formatTime(timeLeft);
+}
+
+if (CASINO_DATA.timerMinutes) {
+  document.getElementById('timer-value').textContent = formatTime(timeLeft);
+  setInterval(updateTimer, 1000);
+} else {
+  document.getElementById('timer-block').style.display = 'none';
+}
+
+
+// ===================================================================
+// COPY PROMO CODE
+// ===================================================================
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(function() { fallbackCopy(text); });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+
+function copyPromoCode() {
+  copyToClipboard(CASINO_DATA.promoCode);
+  var btn = document.getElementById('promo-copy-btn');
+  var textEl = document.getElementById('promo-code-text');
+  var iconEl = document.getElementById('promo-code-icon');
+  var shimmer = document.getElementById('promo-shimmer');
+
+  btn.classList.add('copied');
+  textEl.textContent = 'СКОПИРОВАНО';
+  iconEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+  shimmer.style.display = 'none';
+
+  // Toast
+  var toast = document.getElementById('toast');
+  toast.classList.remove('hidden');
+  setTimeout(function() { toast.classList.add('hidden'); }, 2500);
+
+  setTimeout(function() {
+    btn.classList.remove('copied');
+    textEl.textContent = CASINO_DATA.promoCode;
+    iconEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    shimmer.style.display = '';
+  }, 2000);
+}
+
+function copyStickyCode() {
+  copyToClipboard(CASINO_DATA.promoCode);
+  var el = document.getElementById('sticky-code');
+  el.classList.add('copied');
+  el.textContent = '✓ OK';
+  setTimeout(function() {
+    el.classList.remove('copied');
+    el.textContent = CASINO_DATA.promoCode;
+  }, 2000);
+}
+
+
+// ===================================================================
+// CIRCULAR PROGRESS (Sub-Ratings)
+// ===================================================================
+function renderSubRatings() {
+  var container = document.getElementById('sub-ratings');
+  container.innerHTML = '';
+
+  CASINO_DATA.subRatings.forEach(function(sr) {
+    var size = 52;
+    var strokeWidth = 3.5;
+    var radius = (size - strokeWidth * 2) / 2;
+    var circumference = 2 * Math.PI * radius;
+    var offset = circumference - (sr.value / 5) * circumference;
+    var color = sr.value >= 4.5 ? '#00C853' : (sr.value >= 3.5 ? '#FFC107' : '#FF5252');
+
+    var div = document.createElement('div');
+    div.className = 'sub-rating';
+    div.innerHTML =
+      '<div class="circular-wrapper">' +
+        '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="transform:rotate(-90deg)">' +
+          '<circle cx="' + (size/2) + '" cy="' + (size/2) + '" r="' + radius + '" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="' + strokeWidth + '"/>' +
+          '<circle cx="' + (size/2) + '" cy="' + (size/2) + '" r="' + radius + '" fill="none" stroke="' + color + '" stroke-width="' + strokeWidth + '" stroke-linecap="round" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '" style="transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);filter:drop-shadow(0 0 4px ' + color + '40)"/>' +
+        '</svg>' +
+        '<div class="sub-rating-value">' + sr.value.toFixed(1) + '</div>' +
+      '</div>' +
+      '<div class="sub-rating-label">' + sr.label + '</div>';
+    container.appendChild(div);
+  });
+}
+
+
+// ===================================================================
+// ICON ROWS (Providers, Payments, Languages) + Popovers
+// ===================================================================
+var activePopover = null;
+
+function closeAllPopovers() {
+  document.querySelectorAll('.popover-root').forEach(function(p) {
+    p.classList.remove('popover-visible');
+    p.classList.add('popover-hidden');
+  });
+  document.querySelectorAll('.more-btn').forEach(function(b) { b.classList.remove('active'); });
+  activePopover = null;
+}
+
+function renderIconRow(containerId, items, visibleCount, total, title, type) {
+  var container = document.getElementById(containerId);
+  container.innerHTML = '';
+
+  var visible = items.slice(0, visibleCount);
+  var remaining = total - visibleCount;
+
+  visible.forEach(function(item) {
+    if (type === 'language') {
+      var span = document.createElement('span');
+      span.className = 'lang-badge';
+      span.title = item.name;
+      span.innerHTML = '<span style="font-size:14px;line-height:1">' + item.flag + '</span><span>' + item.name + '</span>';
+      container.appendChild(span);
+    } else {
+      var div = document.createElement('div');
+      div.className = 'logo-icon';
+      div.title = item.name;
+      div.textContent = item.abbr;
+      container.appendChild(div);
+    }
+  });
+
+  if (remaining > 0) {
+    var wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+
+    var btn = document.createElement('button');
+    btn.className = 'more-btn';
+    btn.textContent = '+' + remaining;
+    btn.setAttribute('aria-label', 'Показать все: ' + title + ' (' + total + ')');
+
+    // Create popover
+    var popoverId = 'popover-' + containerId;
+    var popover = document.createElement('div');
+    popover.id = popoverId;
+    popover.className = 'popover-root popover-hidden';
+
+    var popWidth = type === 'language' ? 260 : 300;
+    var inner = '<div class="popover-inner">' +
+      '<div class="popover-header">' + title + '<span class="popover-count">' + total + '</span></div>' +
+      '<div class="popover-body">';
+
+    if (type === 'language') {
+      inner += '<div class="popover-grid-langs">';
+      items.forEach(function(item) {
+        inner += '<div class="popover-lang-item"><span class="popover-lang-flag">' + item.flag + '</span><span class="popover-lang-name">' + item.name + '</span></div>';
+      });
+      inner += '</div>';
+    } else {
+      inner += '<div class="popover-grid-icons">';
+      items.forEach(function(item) {
+        inner += '<div class="popover-icon-item"><div class="popover-icon-box">' + item.abbr + '</div><div class="popover-icon-name">' + item.name + '</div></div>';
+      });
+      inner += '</div>';
+    }
+
+    inner += '</div></div><div class="popover-arrow"></div>';
+    popover.innerHTML = inner;
+    popover.style.width = popWidth + 'px';
+
+    function positionPopover() {
+      var rect = btn.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var top = rect.top - 10;
+
+      var left = cx - popWidth / 2;
+      if (left < 8) left = 8;
+      if (left + popWidth > window.innerWidth - 8) left = window.innerWidth - popWidth - 8;
+
+      popover.style.top = top + 'px';
+      popover.style.left = left + 'px';
+      popover.style.transform = 'translateY(-100%)';
+
+      var arrowLeft = Math.max(16, Math.min(cx - left, popWidth - 16));
+      popover.querySelector('.popover-arrow').style.left = arrowLeft + 'px';
+    }
+
+    // Hover events (desktop)
+    var hoverTimeout;
+
+    function showPopover() {
+      closeAllPopovers();
+      positionPopover();
+      popover.classList.remove('popover-hidden');
+      popover.classList.add('popover-visible');
+      btn.classList.add('active');
+      activePopover = popoverId;
+    }
+
+    function hidePopover() {
+      popover.classList.remove('popover-visible');
+      popover.classList.add('popover-hidden');
+      btn.classList.remove('active');
+      activePopover = null;
+    }
+
+    wrapper.addEventListener('mouseenter', function() {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(showPopover, 100);
+    });
+
+    wrapper.addEventListener('mouseleave', function() {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(hidePopover, 220);
+    });
+
+    popover.addEventListener('mouseenter', function() { clearTimeout(hoverTimeout); });
+    popover.addEventListener('mouseleave', function() {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(hidePopover, 150);
+    });
+
+    // Click (mobile)
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (activePopover === popoverId) {
+        hidePopover();
+      } else {
+        showPopover();
+      }
+    });
+
+    // Scroll/resize repositioning
+    window.addEventListener('scroll', function() {
+      if (activePopover === popoverId) positionPopover();
+    }, true);
+    window.addEventListener('resize', function() {
+      if (activePopover === popoverId) positionPopover();
+    });
+
+    wrapper.appendChild(btn);
+    document.body.appendChild(popover);
+    container.appendChild(wrapper);
+  }
+}
+
+// Close popovers on outside click / ESC
+document.addEventListener('pointerdown', function(e) {
+  if (!activePopover) return;
+  var pop = document.getElementById(activePopover);
+  if (pop && !pop.contains(e.target) && !e.target.classList.contains('more-btn')) {
+    closeAllPopovers();
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeAllPopovers();
+});
+
+
+// ===================================================================
+// PAYMENTS GRID (Tab)
+// ===================================================================
+function renderPaymentsGrid() {
+  var container = document.getElementById('payments-grid');
+  if (!container) return;
+  container.innerHTML = '';
+  CASINO_DATA.payments.forEach(function(p) {
+    var div = document.createElement('div');
+    div.className = 'info-card';
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.gap = '12px';
+    div.innerHTML =
+      '<div style="width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;background:' + (p.color || '#666') + '18;color:' + (p.color || '#fff') + ';">' + p.abbr + '</div>' +
+      '<span style="font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">' + p.name + '</span>';
+    container.appendChild(div);
+  });
+}
+
+
+// ===================================================================
+// GEO DETECTION
+// ===================================================================
+function getFlag(code) {
+  return code.toUpperCase().split('').map(function(c) {
+    return String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65);
+  }).join('');
+}
+
+function detectGeo() {
+  fetch('https://ipapi.co/json/')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var code = data.country_code;
+      var name = data.country_name;
+      var flag = getFlag(code);
+
+      var available = null;
+      if (CASINO_DATA.allowedCountries && CASINO_DATA.allowedCountries.length > 0) {
+        available = CASINO_DATA.allowedCountries.indexOf(code) !== -1;
+      }
+
+      // Logo geo indicator
+      var logoGeo = document.getElementById('logo-geo');
+      var logoFlag = document.getElementById('logo-geo-flag');
+      var logoDot = document.getElementById('logo-geo-dot');
+
+      if (available !== null) {
+        logoGeo.style.display = 'flex';
+        logoFlag.textContent = flag;
+        if (available) {
+          logoGeo.className = 'geo-indicator geo-indicator--available';
+          logoDot.className = 'geo-dot geo-dot--green';
+        } else {
+          logoGeo.className = 'geo-indicator geo-indicator--unavailable';
+          logoDot.className = 'geo-dot geo-dot--red';
+        }
+
+        // Tooltip
+        logoGeo.title = available ? 'Доступно из ' + name : 'Недоступно из ' + name;
+      }
+
+      // Geo block
+      var geoBlock = document.getElementById('geo-block');
+      geoBlock.style.display = 'inline-flex';
+
+      if (available === true) {
+        geoBlock.className = 'geo-block geo-block--available';
+        geoBlock.innerHTML = '<span style="font-size:18px">' + flag + '</span><span>✅ Доступно из ' + name + '</span>';
+      } else if (available === false) {
+        geoBlock.className = 'geo-block geo-block--unavailable';
+        geoBlock.innerHTML = '<span style="font-size:18px">' + flag + '</span><span>❌ Недоступно из ' + name + '</span>';
+      } else {
+        geoBlock.className = 'geo-block geo-block--unknown';
+        geoBlock.innerHTML = '<span style="font-size:18px">' + flag + '</span><span>' + name + '</span>';
+      }
+    })
+    .catch(function() {
+      // Geo detection failed — silently ignore
+    });
+}
+
+
+// ===================================================================
+// TAB NAVIGATION
+// ===================================================================
+function initTabs() {
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var tabId = this.getAttribute('data-tab');
+
+      // Update buttons
+      tabBtns.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+
+      // Update panes
+      document.querySelectorAll('.tab-pane').forEach(function(pane) { pane.classList.remove('active'); });
+      var pane = document.getElementById('pane-' + tabId);
+      if (pane) pane.classList.add('active');
+    });
+  });
+}
+
+
+// ===================================================================
+// STICKY BAR (Mobile)
+// ===================================================================
+function initStickyBar() {
+  var card = document.getElementById('casino-card');
+  var bar = document.getElementById('sticky-bar');
+
+  if (!card || !bar) return;
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          bar.classList.remove('visible');
+        } else {
+          bar.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(card);
+  }
+}
+
+
+// ===================================================================
+// INIT
+// ===================================================================
+document.addEventListener('DOMContentLoaded', function() {
+  renderSubRatings();
+
+  renderIconRow('providers-row', CASINO_DATA.providers, CASINO_DATA.visibleProviders, CASINO_DATA.totalProviders, 'Провайдеры', 'icon');
+  renderIconRow('payments-row', CASINO_DATA.payments, CASINO_DATA.visiblePayments, CASINO_DATA.totalPayments, 'Платежи', 'icon');
+  renderIconRow('languages-row', CASINO_DATA.languages, CASINO_DATA.visibleLanguages, CASINO_DATA.totalLanguages, 'Языки', 'language');
+
+  renderPaymentsGrid();
+  initTabs();
+  initStickyBar();
+  detectGeo();
+});
+</script>
+
+</body>
+</html>
