@@ -88,25 +88,23 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
 
             <div
               ref={containerRef}
-              className={`tooltip__container ${open ? 'tooltip__container--visible' : ''}`}
+              className={`tooltip__container ${type !== 'language' ? 'tooltip__container--providers' : ''} ${open ? 'tooltip__container--visible' : ''}`}
             >
               {/* Arrow */}
               <div className="tooltip__arrow" />
 
-              <div className="tooltip__grid">
-                {items.map((item, i) =>
-                  type === 'language' ? (
-                    <div key={i} className="tooltip__lang-item">
-                      <span className="text-base leading-none">{item.flag}</span>
-                      <span className="tooltip__lang-name">{item.name}</span>
-                    </div>
-                  ) : (
-                    <div key={i} className="ch__item" title={item.name}>
-                      <span className="ch__abbr">{item.abbr}</span>
-                    </div>
-                  )
-                )}
-              </div>
+              {items.map((item, i) =>
+                type === 'language' ? (
+                  <div key={i} className="tooltip__lang-item">
+                    <span className="text-base leading-none">{item.flag}</span>
+                    <span className="tooltip__lang-name">{item.name}</span>
+                  </div>
+                ) : (
+                  <div key={i} className="ch__item" title={item.name}>
+                    <span className="ch__abbr">{item.abbr}</span>
+                  </div>
+                )
+              )}
             </div>
           </div>
         )}
