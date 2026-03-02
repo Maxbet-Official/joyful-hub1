@@ -221,29 +221,150 @@
     background: rgba(255, 255, 255, 0.08);
   }
 
-  .more-btn {
+  /* ── Characteristics block ── */
+  .oc__characteristics {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 0;
+  }
+
+  .ch__list {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .ch__item {
     width: 28px;
     height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #2d3a44;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .ch__item--lang {
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
+  }
+  .ch__abbr {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+  .ch__lang-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--casino-text-80);
+  }
+
+  /* ── Tooltip ── */
+  .tooltip {
+    position: relative;
+  }
+
+  .tooltip__btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.1);
-    color: var(--casino-text-50);
+    color: hsl(var(--primary));
     font-size: 10px;
     font-weight: 700;
     flex-shrink: 0;
-    transition: all 0.15s ease;
     cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
   }
-  .more-btn:hover {
+  .tooltip__btn:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
   }
-  .more-btn.active {
+  .tooltip__btn--active {
     background: rgba(255, 255, 255, 0.25);
-    color: var(--casino-text-80);
+    color: #fff;
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+  }
+
+  .tooltip__container {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    width: 240px;
+    background: #374956;
+    border-radius: 14px;
+    padding: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 9999;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  }
+  .tooltip__container::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 16px;
+    width: 16px;
+    height: 16px;
+    background: #374956;
+    transform: rotate(45deg);
+    border-radius: 2px;
+  }
+  .tooltip__container--visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .tooltip__arrow {
+    display: none; /* using ::before pseudo-element instead */
+  }
+
+  .tooltip__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .tooltip__lang-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+    grid-column: span 2;
+  }
+  .tooltip__lang-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .tooltip__lang-name {
+    font-size: 11px;
+    color: var(--casino-text-80);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 767px) {
+    .ch__list {
+      flex-wrap: wrap;
+    }
   }
 
   .tab-btn {
