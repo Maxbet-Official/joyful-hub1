@@ -263,35 +263,40 @@
   }
 
   .tooltip__container {
+    display: none;
     position: absolute;
-    top: 48px;
-    right: 0;
-    width: 240px;
-    background: #374956;
-    border-radius: 14px;
-    padding: 16px;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-6px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    width: 327px;
+    background: rgb(55 73 86);
+    box-shadow: 0 4px 15px #000;
+    border-radius: 4px;
+    padding: 15px;
+    bottom: 40px;
+    left: 50%;
+    margin-left: -163px;
     z-index: 9999;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
   }
   .tooltip__container::before {
     content: '';
     position: absolute;
-    top: -8px;
-    right: 16px;
+    bottom: -8px;
+    left: 50%;
+    margin-left: -8px;
     width: 16px;
     height: 16px;
-    background: #374956;
+    background: rgb(55 73 86);
     transform: rotate(45deg);
     border-radius: 2px;
   }
   .tooltip__container--visible {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  @media (min-width: 768px) {
+    .tooltip__container.tooltip__container--providers {
+      width: 492px;
+      margin-left: -246px;
+    }
   }
 
   .tooltip__arrow {
