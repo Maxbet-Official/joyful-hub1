@@ -147,18 +147,18 @@ const CasinoCard = () => {
                   className="object-contain max-w-full h-auto"
                 />
                 {/* Geo indicator on logo */}
-                {geo && geo.available !== null && (
+                {geo && geo.status !== 'unknown' && (
                   <div
                     className={`geo-indicator ${
-                      geo.available ? 'geo-indicator--available' : 'geo-indicator--unavailable'
+                      geo.status === 'available' ? 'geo-indicator--available' : 'geo-indicator--unavailable'
                     }`}
-                    title={geo.available ? `Доступно из ${geo.name}` : `Недоступно из ${geo.name}`}
+                    title={geo.status === 'available' ? `Доступно из ${geo.countryNameRu}` : `Недоступно из ${geo.countryNameRu}`}
                   >
                     <span>{geo.flag}</span>
                     <span
                       className="w-2.5 h-2.5 rounded-full block"
                       style={
-                        geo.available
+                        geo.status === 'available'
                           ? { background: '#34D399', boxShadow: '0 0 6px rgba(16,185,129,0.7)' }
                           : { background: '#EF4444', boxShadow: '0 0 6px rgba(239,68,68,0.7)' }
                       }
@@ -326,18 +326,18 @@ const CasinoCard = () => {
             {geo && (
               <div
                 className={`geo-block ${
-                  geo.available === true
+                  geo.status === 'available'
                     ? 'geo-block--available'
-                    : geo.available === false
+                    : geo.status === 'banned'
                     ? 'geo-block--unavailable'
                     : 'geo-block--unknown'
                 }`}
               >
                 <span className="text-lg">{geo.flag}</span>
                 <span>
-                  {geo.available === true && `✅ Доступно из ${geo.name}`}
-                  {geo.available === false && `❌ Недоступно из ${geo.name}`}
-                  {geo.available === null && geo.name}
+                  {geo.status === 'available' && `✅ Доступно из ${geo.countryNameRu}`}
+                  {geo.status === 'banned' && `❌ Недоступно из ${geo.countryNameRu}`}
+                  {geo.status === 'unknown' && '⚪ Не удалось определить страну'}
                 </span>
               </div>
             )}
