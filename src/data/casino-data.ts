@@ -51,8 +51,32 @@ export interface CasinoData {
   languages: Language[];
   totalLanguages: number;
   visibleLanguages: number;
-  allowedCountries: string[];
+  bannedCountriesISO: string[];
 }
+
+/** ISO → Russian country name mapping */
+export const ISO_TO_RU: Record<string, string> = {
+  UA: 'Украина',
+  GB: 'Великобритания',
+  ES: 'Испания',
+  IT: 'Италия',
+  NL: 'Нидерланды',
+  US: 'США',
+  FR: 'Франция',
+  KP: 'КНДР',
+  IR: 'Иран',
+  RU: 'Россия',
+  KZ: 'Казахстан',
+  BY: 'Беларусь',
+  UZ: 'Узбекистан',
+  AZ: 'Азербайджан',
+  GE: 'Грузия',
+  TR: 'Турция',
+  DE: 'Германия',
+  AM: 'Армения',
+  LV: 'Латвия',
+  LT: 'Литва',
+};
 
 export const CASINO_DATA: CasinoData = {
   id: '196885',
@@ -153,5 +177,5 @@ export const CASINO_DATA: CasinoData = {
   totalLanguages: 10,
   visibleLanguages: 3,
 
-  allowedCountries: ['UA', 'RU', 'KZ', 'BY', 'UZ', 'AZ', 'GE', 'TR', 'DE'],
+  bannedCountriesISO: ['UA', 'GB', 'ES', 'IT', 'NL', 'US', 'FR', 'KP', 'IR'],
 };
