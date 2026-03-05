@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface IconItem {
   name: string;
@@ -52,7 +53,7 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
   }, [open]);
 
   // Position tooltip relative to button, clamped to viewport
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open || !btnRef.current || !containerRef.current) return;
 
     const position = () => {
@@ -72,9 +73,10 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
 
       // Position above button
       let top = btnRect.top - containerHeight - gap;
+      let openBelow = false;
       if (top < 12) {
-        // If no room above, position below
         top = btnRect.bottom + gap;
+        openBelow = true;
       }
 
       container.style.left = `${left}px`;
@@ -85,6 +87,13 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
       if (arrow) {
         const arrowLeft = btnRect.left + btnRect.width / 2 - left - 7;
         arrow.style.left = `${arrowLeft}px`;
+        if (openBelow) {
+          arrow.style.top = '-7px';
+          arrow.style.bottom = 'auto';
+        } else {
+          arrow.style.bottom = '-7px';
+          arrow.style.top = 'auto';
+        }
       }
     };
 
@@ -99,7 +108,6 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
 
   const toggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Close all other tooltips first
     closeAllTooltipsFns.forEach(fn => {
       if (fn !== close) fn();
     });
@@ -126,7 +134,7 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
               +{remaining}
             </button>
 
-            {open && (
+            {open && createPortal(
               <div
                 ref={containerRef}
                 className="tooltip__container tooltip__container--visible"
@@ -137,7 +145,8 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
                     <span className="ch__abbr">{type === 'language' ? item.code : item.abbr}</span>
                   </div>
                 ))}
-              </div>
+              </div>,
+              document.body
             )}
           </>
         )}
