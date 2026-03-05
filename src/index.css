@@ -193,7 +193,7 @@
 
   .ch__list {
     display: flex;
-    gap: 12px;
+    gap: 4px;
     align-items: center;
     flex-wrap: nowrap;
   }
@@ -203,32 +203,18 @@
     height: 28px;
     display: grid;
     place-items: center;
-    border-radius: 8px;
+    border-radius: 4px;
     background: #2d3a44;
     overflow: hidden;
     flex-shrink: 0;
-  }
-  .ch__item--lang {
-    width: auto;
-    height: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    margin: 2px;
   }
   .ch__abbr {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
     color: #fff;
     line-height: 1;
-  }
-  .ch__lang-name {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--casino-text-80);
+    text-transform: uppercase;
   }
 
   /* ── Tooltip ── */
@@ -266,10 +252,12 @@
     display: none;
     position: absolute;
     width: 327px;
+    max-height: 300px;
+    overflow-y: auto;
     background: rgb(55 73 86);
     box-shadow: 0 4px 15px #000;
     border-radius: 4px;
-    padding: 15px;
+    padding: 10px;
     bottom: 40px;
     left: 50%;
     margin-left: -163px;
@@ -290,6 +278,7 @@
   .tooltip__container--visible {
     display: flex;
     flex-wrap: wrap;
+    gap: 0;
   }
 
   @media (min-width: 768px) {
@@ -300,33 +289,7 @@
   }
 
   .tooltip__arrow {
-    display: none; /* using ::before pseudo-element instead */
-  }
-
-  .tooltip__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
-
-  .tooltip__lang-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 6px;
-    border-radius: 6px;
-    transition: background 0.15s ease;
-    grid-column: span 2;
-  }
-  .tooltip__lang-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
-  .tooltip__lang-name {
-    font-size: 11px;
-    color: var(--casino-text-80);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: none;
   }
 
   @media (max-width: 767px) {

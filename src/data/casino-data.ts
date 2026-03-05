@@ -68,6 +68,22 @@ const LANG_FLAGS: Record<string, string> = {
   'Английский (Канада)': '🇨🇦', 'Французский (Канада)': '🇨🇦',
 };
 
+// ── Language name → 3-letter code mapping ──
+export const LANG_CODES: Record<string, string> = {
+  'Русский': 'RUS', 'Английский': 'ENG', 'Немецкий': 'DEU', 'Французский': 'FRA',
+  'Турецкий': 'TUR', 'Казахский': 'KAZ', 'Узбекский': 'UZB', 'Азербайджанский': 'AZE',
+  'Таджикский': 'TJK', 'Киргизский': 'KGZ', 'Испанский': 'ESP', 'Итальянский': 'ITA',
+  'Португальский': 'POR', 'Польский': 'POL', 'Японский': 'JPN', 'Китайский': 'CHN',
+  'Корейский': 'KOR', 'Арабский': 'ARA', 'Хинди': 'HIN', 'Чешский': 'CES',
+  'Шведский': 'SWE', 'Норвежский': 'NOR', 'Финский': 'FIN', 'Датский': 'DAN',
+  'Голландский': 'NLD', 'Греческий': 'ELL', 'Румынский': 'RON', 'Венгерский': 'HUN',
+  'Болгарский': 'BUL', 'Сербский': 'SRP', 'Хорватский': 'HRV', 'Словацкий': 'SLK',
+  'Словенский': 'SLV', 'Литовский': 'LIT', 'Латышский': 'LAV', 'Эстонский': 'EST',
+  'Грузинский': 'KAT', 'Армянский': 'HYE', 'Украинский': 'UKR', 'Белорусский': 'BEL',
+  'Тайский': 'THA', 'Вьетнамский': 'VIE', 'Индонезийский': 'IND', 'Малайский': 'MSA',
+  'Английский (Канада)': 'ENC', 'Французский (Канада)': 'FRC',
+};
+
 // ── Interfaces ──
 
 export interface SubRating {
@@ -94,6 +110,7 @@ export interface PaymentItem {
 export interface LanguageItem {
   name: string;
   flag: string;
+  code: string;
 }
 
 export interface FaqItem {
@@ -284,6 +301,7 @@ const payments: PaymentItem[] = uniquePayments.map((name) => ({
 const languages: LanguageItem[] = RAW.sidebar_data.access.languages.map((name) => ({
   name,
   flag: LANG_FLAGS[name] || '🌐',
+  code: LANG_CODES[name] || name.substring(0, 3).toUpperCase(),
 }));
 
 // ── Build banned countries ISO ──
@@ -339,11 +357,11 @@ export const CASINO_DATA: CasinoData = {
 
   providers,
   totalProviders: providers.length,
-  visibleProviders: 6,
+  visibleProviders: 3,
 
   payments,
   totalPayments: payments.length,
-  visiblePayments: 5,
+  visiblePayments: 3,
 
   languages,
   totalLanguages: languages.length,
