@@ -283,7 +283,7 @@ const CasinoCard = () => {
             </div>
 
             {/* Providers / Payments / Languages */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ minWidth: 0 }}>
               <div>
                 <div className="text-xs uppercase tracking-wider font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   Провайдеры
