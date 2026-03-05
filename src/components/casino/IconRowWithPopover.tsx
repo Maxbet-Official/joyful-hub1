@@ -5,6 +5,7 @@ interface IconItem {
   abbr?: string;
   flag?: string;
   color?: string;
+  code?: string;
 }
 
 interface IconRowWithPopoverProps {
@@ -62,18 +63,11 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
   return (
     <div className="oc__characteristics">
       <div className="ch__list">
-        {visible.map((item, i) =>
-          type === 'language' ? (
-            <div key={i} className="ch__item ch__item--lang" title={item.name}>
-              <span className="text-sm leading-none">{item.flag}</span>
-              <span className="ch__lang-name">{item.name}</span>
-            </div>
-          ) : (
-            <div key={i} className="ch__item" title={item.name}>
-              <span className="ch__abbr">{item.abbr}</span>
-            </div>
-          )
-        )}
+        {visible.map((item, i) => (
+          <div key={i} className="ch__item" title={item.name}>
+            <span className="ch__abbr">{type === 'language' ? item.code : item.abbr}</span>
+          </div>
+        ))}
 
         {remaining > 0 && (
           <div className="tooltip">
@@ -93,18 +87,11 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
               {/* Arrow */}
               <div className="tooltip__arrow" />
 
-              {items.map((item, i) =>
-                type === 'language' ? (
-                  <div key={i} className="tooltip__lang-item">
-                    <span className="text-base leading-none">{item.flag}</span>
-                    <span className="tooltip__lang-name">{item.name}</span>
-                  </div>
-                ) : (
-                  <div key={i} className="ch__item" title={item.name}>
-                    <span className="ch__abbr">{item.abbr}</span>
-                  </div>
-                )
-              )}
+              {items.map((item, i) => (
+                <div key={i} className="ch__item" title={item.name}>
+                  <span className="ch__abbr">{type === 'language' ? item.code : item.abbr}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}
