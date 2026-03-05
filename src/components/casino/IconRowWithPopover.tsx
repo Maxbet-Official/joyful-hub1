@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface IconItem {
   name: string;
@@ -51,9 +52,62 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
     return () => document.removeEventListener('click', handleClick);
   }, [open]);
 
+  // Position tooltip relative to button, clamped to viewport
+  useLayoutEffect(() => {
+    if (!open || !btnRef.current || !containerRef.current) return;
+
+    const position = () => {
+      const btn = btnRef.current;
+      const container = containerRef.current;
+      if (!btn || !container) return;
+
+      const btnRect = btn.getBoundingClientRect();
+      const containerWidth = container.offsetWidth;
+      const containerHeight = container.offsetHeight;
+      const viewportW = window.innerWidth;
+      const gap = 10;
+
+      // Center horizontally on button, clamp to viewport
+      let left = btnRect.left + btnRect.width / 2 - containerWidth / 2;
+      left = Math.max(12, Math.min(left, viewportW - containerWidth - 12));
+
+      // Position above button
+      let top = btnRect.top - containerHeight - gap;
+      let openBelow = false;
+      if (top < 12) {
+        top = btnRect.bottom + gap;
+        openBelow = true;
+      }
+
+      container.style.left = `${left}px`;
+      container.style.top = `${top}px`;
+
+      // Adjust arrow position
+      const arrow = container.querySelector('.tooltip__arrow') as HTMLElement;
+      if (arrow) {
+        const arrowLeft = btnRect.left + btnRect.width / 2 - left - 7;
+        arrow.style.left = `${arrowLeft}px`;
+        if (openBelow) {
+          arrow.style.top = '-7px';
+          arrow.style.bottom = 'auto';
+        } else {
+          arrow.style.bottom = '-7px';
+          arrow.style.top = 'auto';
+        }
+      }
+    };
+
+    position();
+    window.addEventListener('resize', position);
+    window.addEventListener('scroll', position, true);
+    return () => {
+      window.removeEventListener('resize', position);
+      window.removeEventListener('scroll', position, true);
+    };
+  }, [open]);
+
   const toggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Close all other tooltips first
     closeAllTooltipsFns.forEach(fn => {
       if (fn !== close) fn();
     });
@@ -70,7 +124,7 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
         ))}
 
         {remaining > 0 && (
-          <div className="tooltip">
+          <>
             <button
               ref={btnRef}
               className={`tooltip__btn ${open ? 'tooltip__btn--active' : ''}`}
@@ -80,20 +134,21 @@ const IconRowWithPopover = ({ items, visibleCount, totalCount, title, type }: Ic
               +{remaining}
             </button>
 
-            <div
-              ref={containerRef}
-              className={`tooltip__container ${type !== 'language' ? 'tooltip__container--providers' : ''} ${open ? 'tooltip__container--visible' : ''}`}
-            >
-              {/* Arrow */}
-              <div className="tooltip__arrow" />
-
-              {items.map((item, i) => (
-                <div key={i} className="ch__item" title={item.name}>
-                  <span className="ch__abbr">{type === 'language' ? item.code : item.abbr}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+            {open && createPortal(
+              <div
+                ref={containerRef}
+                className="tooltip__container tooltip__container--visible"
+              >
+                <div className="tooltip__arrow" />
+                {items.map((item, i) => (
+                  <div key={i} className="ch__item" title={item.name}>
+                    <span className="ch__abbr">{type === 'language' ? item.code : item.abbr}</span>
+                  </div>
+                ))}
+              </div>,
+              document.body
+            )}
+          </>
         )}
       </div>
     </div>

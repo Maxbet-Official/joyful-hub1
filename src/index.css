@@ -186,21 +186,24 @@
 
   /* ── Characteristics block ── */
   .oc__characteristics {
-    background: rgba(255, 255, 255, 0.03);
     border-radius: 10px;
     padding: 0;
+    min-width: 0;
+    overflow: visible;
   }
 
   .ch__list {
     display: flex;
-    gap: 4px;
+    gap: 0;
     align-items: center;
     flex-wrap: nowrap;
+    min-width: 0;
   }
 
   .ch__item {
     width: 28px;
     height: 28px;
+    min-width: 28px;
     display: grid;
     place-items: center;
     border-radius: 4px;
@@ -218,14 +221,11 @@
   }
 
   /* ── Tooltip ── */
-  .tooltip {
-    position: relative;
-  }
-
   .tooltip__btn {
     width: 28px;
     height: 28px;
-    border-radius: 8px;
+    min-width: 28px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,43 +237,24 @@
     cursor: pointer;
     transition: all 0.15s ease;
     border: none;
+    margin: 2px;
   }
   .tooltip__btn:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
   }
   .tooltip__btn--active {
     background: rgba(255, 255, 255, 0.25);
     color: #fff;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
   }
 
   .tooltip__container {
-    display: none;
-    position: absolute;
-    width: 327px;
-    max-height: 300px;
-    overflow-y: auto;
-    background: rgb(55 73 86);
-    box-shadow: 0 4px 15px #000;
-    border-radius: 4px;
+    position: fixed;
+    background: rgb(55, 73, 86);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
     padding: 10px;
-    bottom: 40px;
-    left: 50%;
-    margin-left: -163px;
     z-index: 9999;
-  }
-  .tooltip__container::before {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    margin-left: -8px;
-    width: 16px;
-    height: 16px;
-    background: rgb(55 73 86);
-    transform: rotate(45deg);
-    border-radius: 2px;
+    max-width: calc(100vw - 24px);
   }
   .tooltip__container--visible {
     display: flex;
@@ -281,21 +262,14 @@
     gap: 0;
   }
 
-  @media (min-width: 768px) {
-    .tooltip__container.tooltip__container--providers {
-      width: 492px;
-      margin-left: -246px;
-    }
-  }
-
   .tooltip__arrow {
-    display: none;
-  }
-
-  @media (max-width: 767px) {
-    .ch__list {
-      flex-wrap: wrap;
-    }
+    position: absolute;
+    bottom: -7px;
+    width: 14px;
+    height: 14px;
+    background: rgb(55, 73, 86);
+    transform: rotate(45deg);
+    border-radius: 2px;
   }
 
   .tab-btn {
