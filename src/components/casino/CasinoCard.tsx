@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { CASINO_DATA, ISO_TO_RU } from '@/data/casino-data';
 import { ChevronLeft, ExternalLink, Copy, Check, Clock, Flame, Trophy, Shield, Zap, Gift } from 'lucide-react';
 import { toast } from 'sonner';
