@@ -49,21 +49,60 @@ const CasinoCard = () => {
   const cardRef = useRef<HTMLDivElement>(null!);
   const [activeTab, setActiveTab] = useState('overview');
   const [promoCopied, setPromoCopied] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(
-    CASINO_DATA.timerMinutes ? CASINO_DATA.timerMinutes * 60 + 20 : 0
-  );
+  // Timer phases: 56min → 30min → 10min → restart
+  const TIMER_PHASES = [56 * 60, 30 * 60, 10 * 60];
+  const [timerPhase, setTimerPhase] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(CASINO_DATA.timerMinutes ? TIMER_PHASES[0] : 0);
+  const [timerUrgent, setTimerUrgent] = useState(false);
+
+  // Dynamic user count
+  const [usedCount, setUsedCount] = useState(() => {
+    // Seed based on current hour so it feels consistent per session but varies across time
+    const hourSeed = new Date().getHours();
+    return CASINO_DATA.usedCount + hourSeed * 3;
+  });
+
   const [geo, setGeo] = useState<GeoState | null>(null);
 
-  // Timer
+  // Timer with phases
   useEffect(() => {
     if (!CASINO_DATA.timerMinutes) return;
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 0) return 0;
+        if (prev <= 1) {
+          // Move to next phase or restart
+          setTimerPhase((p) => {
+            const next = (p + 1) % TIMER_PHASES.length;
+            setTimeLeft(TIMER_PHASES[next]);
+            return next;
+          });
+          return 0;
+        }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Urgency detection
+  useEffect(() => {
+    setTimerUrgent(timeLeft > 0 && timeLeft <= 5 * 60);
+  }, [timeLeft]);
+
+  // Simulated user count growth: +1 every 15-45s
+  useEffect(() => {
+    const tick = () => {
+      setUsedCount((prev) => prev + 1);
+    };
+    const scheduleNext = () => {
+      const delay = 15000 + Math.random() * 30000; // 15-45 seconds
+      return setTimeout(() => {
+        tick();
+        timerRef.current = scheduleNext();
+      }, delay);
+    };
+    const timerRef = { current: scheduleNext() };
+    return () => clearTimeout(timerRef.current);
   }, []);
 
   // Geo detection
