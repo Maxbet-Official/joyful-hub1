@@ -272,16 +272,18 @@ const CasinoCard = () => {
               </button>
 
               {/* Social Proof */}
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-t-[rgba(255,255,255,0.05)]">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-t-[rgba(255,255,255,0.05)]">
                 {/* Timer */}
                 {CASINO_DATA.timerMinutes > 0 && timeLeft > 0 && (
-                  <div className={`flex items-center gap-2 ${timerUrgent ? 'animate-pulse' : ''}`} style={{ color: timerUrgent ? '#EF4444' : 'hsl(var(--primary))' }}>
-                    <Clock size={14} />
+                  <div className={`flex items-center gap-2.5 ${timerUrgent ? 'animate-pulse' : ''}`} style={{ color: timerUrgent ? '#EF4444' : 'hsl(var(--primary))' }}>
+                    <div className="p-2 rounded-xl flex" style={{ background: timerUrgent ? 'rgba(239,68,68,0.1)' : 'rgba(0,200,83,0.08)' }}>
+                      <Clock size={18} />
+                    </div>
                     <div>
-                      <div className="text-[9px] uppercase font-bold leading-none mb-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                        {timerUrgent ? 'Скоро истекает!' : 'Истекает через'}
+                      <div className="text-[10px] uppercase font-bold leading-none mb-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                        {timerUrgent ? '⚡ Скоро истекает!' : 'Истекает через'}
                       </div>
-                      <div className="font-mono-casino text-sm font-bold tabular-nums">
+                      <div className="font-mono-casino text-lg font-black tabular-nums leading-none tracking-tight">
                         {formatTime(timeLeft)}
                       </div>
                     </div>
@@ -289,16 +291,16 @@ const CasinoCard = () => {
                 )}
 
                 {/* Counter */}
-                <div className="flex items-center gap-2" style={{ color: '#F97316' }}>
-                  <div className="p-1.5 rounded-lg flex animate-pulse" style={{ background: 'rgba(249,115,22,0.1)' }}>
-                    <Flame size={16} />
+                <div className="flex items-center gap-2.5" style={{ color: '#F97316' }}>
+                  <div className="p-2 rounded-xl flex animate-pulse" style={{ background: 'rgba(249,115,22,0.1)' }}>
+                    <Flame size={18} />
                   </div>
                   <div>
-                    <div className="text-sm font-black text-foreground leading-none tracking-tight">
-                      {usedCount.toLocaleString('ru-RU')}
+                    <div className="text-lg font-black text-foreground leading-none tracking-tight">
+                      {displayCount.toLocaleString('ru-RU')}+
                     </div>
-                    <div className="text-[9px] uppercase font-bold mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                      человек уже использовали
+                    <div className="text-[10px] uppercase font-bold mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                      уже активировали
                     </div>
                   </div>
                 </div>
