@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { CASINO_DATA, ISO_TO_RU } from '@/data/casino-data';
 import { ChevronLeft, ExternalLink, Copy, Check, Clock, Flame, Trophy, Shield, Zap, Gift } from 'lucide-react';
 import { toast } from 'sonner';
@@ -55,12 +55,13 @@ const CasinoCard = () => {
   const [timeLeft, setTimeLeft] = useState(CASINO_DATA.timerMinutes ? TIMER_PHASES[0] : 0);
   const [timerUrgent, setTimerUrgent] = useState(false);
 
-  // Dynamic user count
+  // Dynamic user count with animated display
   const [usedCount, setUsedCount] = useState(() => {
-    // Seed based on current hour so it feels consistent per session but varies across time
     const hourSeed = new Date().getHours();
-    return CASINO_DATA.usedCount + hourSeed * 3;
+    return CASINO_DATA.usedCount + hourSeed * 2;
   });
+  const [displayCount, setDisplayCount] = useState(usedCount);
+  const countRef = useRef(usedCount);
 
   const [geo, setGeo] = useState<GeoState | null>(null);
 
@@ -89,21 +90,37 @@ const CasinoCard = () => {
     setTimerUrgent(timeLeft > 0 && timeLeft <= 5 * 60);
   }, [timeLeft]);
 
-  // Simulated user count growth: +1 every 15-45s
+  // Simulated user count growth: +1 every 20-50s
   useEffect(() => {
-    const tick = () => {
-      setUsedCount((prev) => prev + 1);
-    };
     const scheduleNext = () => {
-      const delay = 15000 + Math.random() * 30000; // 15-45 seconds
+      const delay = 20000 + Math.random() * 30000;
       return setTimeout(() => {
-        tick();
+        setUsedCount((prev) => prev + 1);
         timerRef.current = scheduleNext();
       }, delay);
     };
     const timerRef = { current: scheduleNext() };
     return () => clearTimeout(timerRef.current);
   }, []);
+
+  // Animate count changes smoothly
+  useEffect(() => {
+    if (displayCount === usedCount) return;
+    const start = countRef.current;
+    const end = usedCount;
+    const duration = 800;
+    const startTime = performance.now();
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      const current = Math.round(start + (end - start) * eased);
+      setDisplayCount(current);
+      if (progress < 1) requestAnimationFrame(animate);
+      else countRef.current = end;
+    };
+    requestAnimationFrame(animate);
+  }, [usedCount]);
 
   // Geo detection
   useEffect(() => {
@@ -255,16 +272,18 @@ const CasinoCard = () => {
               </button>
 
               {/* Social Proof */}
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-t-[rgba(255,255,255,0.05)]">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-t-[rgba(255,255,255,0.05)]">
                 {/* Timer */}
                 {CASINO_DATA.timerMinutes > 0 && timeLeft > 0 && (
-                  <div className={`flex items-center gap-2 ${timerUrgent ? 'animate-pulse' : ''}`} style={{ color: timerUrgent ? '#EF4444' : 'hsl(var(--primary))' }}>
-                    <Clock size={14} />
+                  <div className={`flex items-center gap-2.5 ${timerUrgent ? 'animate-pulse' : ''}`} style={{ color: timerUrgent ? '#EF4444' : 'hsl(var(--primary))' }}>
+                    <div className="p-2 rounded-xl flex" style={{ background: timerUrgent ? 'rgba(239,68,68,0.1)' : 'rgba(0,200,83,0.08)' }}>
+                      <Clock size={18} />
+                    </div>
                     <div>
-                      <div className="text-[9px] uppercase font-bold leading-none mb-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                        {timerUrgent ? 'Скоро истекает!' : 'Истекает через'}
+                      <div className="text-[10px] uppercase font-bold leading-none mb-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                        {timerUrgent ? '⚡ Скоро истекает!' : 'Истекает через'}
                       </div>
-                      <div className="font-mono-casino text-sm font-bold tabular-nums">
+                      <div className="font-mono-casino text-lg font-black tabular-nums leading-none tracking-tight">
                         {formatTime(timeLeft)}
                       </div>
                     </div>
@@ -272,16 +291,16 @@ const CasinoCard = () => {
                 )}
 
                 {/* Counter */}
-                <div className="flex items-center gap-2" style={{ color: '#F97316' }}>
-                  <div className="p-1.5 rounded-lg flex animate-pulse" style={{ background: 'rgba(249,115,22,0.1)' }}>
-                    <Flame size={16} />
+                <div className="flex items-center gap-2.5" style={{ color: '#F97316' }}>
+                  <div className="p-2 rounded-xl flex animate-pulse" style={{ background: 'rgba(249,115,22,0.1)' }}>
+                    <Flame size={18} />
                   </div>
                   <div>
-                    <div className="text-sm font-black text-foreground leading-none tracking-tight">
-                      {usedCount.toLocaleString('ru-RU')}
+                    <div className="text-lg font-black text-foreground leading-none tracking-tight">
+                      {displayCount.toLocaleString('ru-RU')}+
                     </div>
-                    <div className="text-[9px] uppercase font-bold mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                      человек уже использовали
+                    <div className="text-[10px] uppercase font-bold mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                      уже активировали
                     </div>
                   </div>
                 </div>
