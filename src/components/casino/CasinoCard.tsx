@@ -55,12 +55,13 @@ const CasinoCard = () => {
   const [timeLeft, setTimeLeft] = useState(CASINO_DATA.timerMinutes ? TIMER_PHASES[0] : 0);
   const [timerUrgent, setTimerUrgent] = useState(false);
 
-  // Dynamic user count
+  // Dynamic user count with animated display
   const [usedCount, setUsedCount] = useState(() => {
-    // Seed based on current hour so it feels consistent per session but varies across time
     const hourSeed = new Date().getHours();
-    return CASINO_DATA.usedCount + hourSeed * 3;
+    return CASINO_DATA.usedCount + hourSeed * 2;
   });
+  const [displayCount, setDisplayCount] = useState(usedCount);
+  const countRef = useRef(usedCount);
 
   const [geo, setGeo] = useState<GeoState | null>(null);
 
