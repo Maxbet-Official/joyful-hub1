@@ -326,7 +326,7 @@ export const CASINO_DATA: CasinoData = {
   promoCode: 'CASINORU',
   promoLabel: 'Эксклюзивный бонус',
 
-  usedCount: 505,
+  usedCount: 327,
   timerMinutes: 56,
 
   overallRating: RAW.rating_score,

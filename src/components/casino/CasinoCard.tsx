@@ -90,21 +90,37 @@ const CasinoCard = () => {
     setTimerUrgent(timeLeft > 0 && timeLeft <= 5 * 60);
   }, [timeLeft]);
 
-  // Simulated user count growth: +1 every 15-45s
+  // Simulated user count growth: +1 every 20-50s
   useEffect(() => {
-    const tick = () => {
-      setUsedCount((prev) => prev + 1);
-    };
     const scheduleNext = () => {
-      const delay = 15000 + Math.random() * 30000; // 15-45 seconds
+      const delay = 20000 + Math.random() * 30000;
       return setTimeout(() => {
-        tick();
+        setUsedCount((prev) => prev + 1);
         timerRef.current = scheduleNext();
       }, delay);
     };
     const timerRef = { current: scheduleNext() };
     return () => clearTimeout(timerRef.current);
   }, []);
+
+  // Animate count changes smoothly
+  useEffect(() => {
+    if (displayCount === usedCount) return;
+    const start = countRef.current;
+    const end = usedCount;
+    const duration = 800;
+    const startTime = performance.now();
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      const current = Math.round(start + (end - start) * eased);
+      setDisplayCount(current);
+      if (progress < 1) requestAnimationFrame(animate);
+      else countRef.current = end;
+    };
+    requestAnimationFrame(animate);
+  }, [usedCount]);
 
   // Geo detection
   useEffect(() => {
