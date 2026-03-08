@@ -258,11 +258,11 @@ const CasinoCard = () => {
               <div className="flex items-center justify-between mt-3 pt-3 border-t border-t-[rgba(255,255,255,0.05)]">
                 {/* Timer */}
                 {CASINO_DATA.timerMinutes > 0 && timeLeft > 0 && (
-                  <div className="flex items-center gap-2 text-primary">
+                  <div className={`flex items-center gap-2 ${timerUrgent ? 'animate-pulse' : ''}`} style={{ color: timerUrgent ? '#EF4444' : 'hsl(var(--primary))' }}>
                     <Clock size={14} />
                     <div>
                       <div className="text-[9px] uppercase font-bold leading-none mb-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                        Истекает через
+                        {timerUrgent ? 'Скоро истекает!' : 'Истекает через'}
                       </div>
                       <div className="font-mono-casino text-sm font-bold tabular-nums">
                         {formatTime(timeLeft)}
@@ -278,7 +278,7 @@ const CasinoCard = () => {
                   </div>
                   <div>
                     <div className="text-sm font-black text-foreground leading-none tracking-tight">
-                      {CASINO_DATA.usedCount}
+                      {usedCount.toLocaleString('ru-RU')}
                     </div>
                     <div className="text-[9px] uppercase font-bold mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
                       человек уже использовали
